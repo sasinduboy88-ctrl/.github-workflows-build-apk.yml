@@ -19,18 +19,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - name: Fix pnpm Catalog Issues
-        run: |
-          sed -i 's/catalog://g' package.json
-          if [ -f pnpm-workspace.yaml ]; then rm pnpm-workspace.yaml; fi
-
-      - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile --ignore-scripts
+      - name: Force Install via NPM
+        run: npm install --legacy-peer-deps --force
 
       - name: Build Android APK
         run: |
@@ -39,8 +29,8 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: android/app/build/outputs/apk/release/*.apk
