@@ -12,33 +12,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
       - name: Install Dependencies
-        run: pnpm install
+        run: npm install
 
-      - name: Setup EAS CLI
-        run: npm install -g eas-cli
-
-      - name: Build Android App (Prebuild & Gradle)
+      - name: Build Android APK
         run: |
-          npx expo prebuild --platform android
+          npx expo prebuild --platform android --clean
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
