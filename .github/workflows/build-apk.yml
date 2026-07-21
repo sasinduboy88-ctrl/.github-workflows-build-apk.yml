@@ -24,10 +24,13 @@ jobs:
         with:
           version: 9
 
+      - name: Fix pnpm Catalog Issues
+        run: |
+          sed -i 's/catalog://g' package.json
+          if [ -f pnpm-workspace.yaml ]; then rm pnpm-workspace.yaml; fi
+
       - name: Install Dependencies
-        run: pnpm install --no-frozen-lockfile --config.strict-peer-dependencies=false --no-optional
-        env:
-          PRISMA_SKIP_POSTINSTALL_GENERATE: true
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
 
       - name: Build Android APK
         run: |
